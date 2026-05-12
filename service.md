@@ -63,3 +63,17 @@ Cache	Redis
 
 
 
+
+
+
+http://localhost:8000/-- > api gate way 
+
+
+http://localhost:8000/register
+
+
+
+http://localhost:8001/api/auth/register--> auth-service
+http://localhost:8002/api/test--> test-service
+http://localhost:8003/api/test--> user-analytics
+
