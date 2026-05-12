@@ -1,9 +1,22 @@
+import { registerUser, loginUser } from "../services/user.service.js";
+import { generateToken } from "../utils/jwt.js";
 
 
-export const handleRegister = async(req, res)=>{
-    const {fullname, email, password} = req.body;
+export const handleRegister = async (req, res) => {
+    const { fullname, email, password } = req.body;
     try {
-        
+        const user = registerUser({ fullname, email, password });
+
+        const token = generateToken({ id: user._id });
+
+        res.setHeader('Authorization', `Bearer ${token}`);
+
+        return res.status(201).json({
+            success: true,
+            message: 'User registered successfully',
+            token,
+            user,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -12,36 +25,73 @@ export const handleRegister = async(req, res)=>{
         })
     }
 }
-export const handleLogin = async(req, res)=>{
+
+export const handleLogin = async (req, res) => {
     try {
-        
+        const { email, password } = req.body;
+
+        const user = await loginUser({
+            email,
+            password,
+        });
+
+        const token = generateToken({
+            id: user._id,
+        });
+
+        res.setHeader('Authorization', `Bearer ${token}`);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Login successful',
+
+            user: {
+                id: user._id,
+                fullname: user.fullname,
+                email: user.email,
+            },
+        });
+
     } catch (error) {
-        res.status(500).json({
+
+        return res.status(401).json({
             success: false,
-            message: "Error while login",
-            error: error.message
-        })
+            message: error.message,
+        });
     }
-}
-export const handleLogout = async(req, res)=>{
+};
+
+export const handleLogout = async (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: 'Logout successful',
+    });
+};
+
+export const handleGetMe = async (req, res) => {
     try {
-        
+        const user = await UserRepo.findById(
+            req.user.id
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user,
+        });
+
     } catch (error) {
-        res.status(500).json({
+
+        return res.status(500).json({
             success: false,
-            message: "Error while logout",
-            error: error.message
-        })
+            message: 'Error while getMe',
+            error: error.message,
+        });
     }
-}
-export const handleGetMe = async(req, res)=>{
-    try {
-        
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Error while getMe",
-            error: error.message
-        })
-    }
-}
+};

@@ -1,13 +1,17 @@
 import UserModel from '../models/user.model.js';
 
-export const findById = (id)=>{
-    return UserModel.findById(id);
+export const findById = async (id)=>{
+    return await UserModel.findById(id);
 }
 
-export const findByEmail = (email)=>{
-    return UserModel.findOne({email});
+export const findByEmail = async (email)=>{
+    return await UserModel.findOne({email});
 }
 
-export const createOne = (data)=>{
-    return UserModel.create(data);
+export const findByEmailWithPassword = async (email)=>{
+    return await UserModel.findOne({email}).select("+password");
+}
+
+export const createOne = async (data)=>{
+    return await UserModel.create(data);
 }

@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import IndexRoutes from './routes/index.route.js';
+import { globalErrorHandler } from './middlewares/error.middleware.js';
 
 
 const app = express();
@@ -28,5 +29,7 @@ app.use('/', (req, res)=>{
 });
 
 app.use('/api', IndexRoutes);
+
+app.use(globalErrorHandler);
 
 export default app;
