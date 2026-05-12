@@ -5,6 +5,8 @@ import { globalErrorHandler } from './middlewares/error.middleware.js';
 
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(morgan('dev'));
 
 app.get('/health', async (req, res) => {
@@ -24,7 +26,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-app.use('/', (req, res)=>{
+app.get('/', (req, res)=>{
     res.end('Server is running...')
 });
 

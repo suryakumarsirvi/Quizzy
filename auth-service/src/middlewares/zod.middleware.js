@@ -1,15 +1,27 @@
-export const validate = async (schema) => {
-    return async (req, res, next) => {
-        try {
-            await schema.parseAsync(req.body);
+export const validate = (schema) => {
+  return async (req, res, next) => {
+    try {
 
-            next();
-        } catch (error) {
-            return res.status(400).json({
-                success: false,
-                message: "Failed to validate schema",
-                errors: error.errors
-            });
-        }
+      if (
+        !req.body ||
+        !Object.keys(req.body).length
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'Request body is required',
+        });
+      }
+
+      req.body = await schema.parseAsync(req.body);
+
+      next();
+    } catch (error) {
+
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: error.issues,
+      });
     }
-}
+  };
+};

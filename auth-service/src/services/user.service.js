@@ -1,4 +1,4 @@
-import { generateHash } from "../utils/bcrypt"
+import { compareHash, generateHash } from "../utils/bcrypt.js"
 import * as UserRepo from '../repositories/user.repository.js'
 
 export const registerUser = async ({ fullname, email, password }) => {
@@ -25,9 +25,7 @@ export const registerUser = async ({ fullname, email, password }) => {
         password: hashedPassword,
     };
 
-    return await UserRepo.createOne(
-        newUser
-    );
+    return await UserRepo.createOne(newUser);
 }
 
 export const loginUser = async ({ email, password }) => {
@@ -52,3 +50,7 @@ export const loginUser = async ({ email, password }) => {
 
     return user;
 };
+
+export const GetUser = async (req, res) =>{
+    return await UserRepo.findById(req.user.id);
+}

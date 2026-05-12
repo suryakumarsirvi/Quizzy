@@ -1,4 +1,4 @@
-import bcrypt from 'brcyptjs'
+import bcrypt from 'bcryptjs'
 
 export const generateHash = (value, salt = 10) => {
     return bcrypt.hash(value, salt)

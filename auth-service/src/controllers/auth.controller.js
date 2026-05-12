@@ -1,11 +1,11 @@
-import { registerUser, loginUser } from "../services/user.service.js";
+import { registerUser, loginUser, GetUser } from "../services/user.service.js";
 import { generateToken } from "../utils/jwt.js";
 
 
 export const handleRegister = async (req, res) => {
     const { fullname, email, password } = req.body;
     try {
-        const user = registerUser({ fullname, email, password });
+        const user = await registerUser({ fullname, email, password });
 
         const token = generateToken({ id: user._id });
 
@@ -70,9 +70,7 @@ export const handleLogout = async (req, res) => {
 
 export const handleGetMe = async (req, res) => {
     try {
-        const user = await UserRepo.findById(
-            req.user.id
-        );
+        const user = await GetUser(req);
 
         if (!user) {
             return res.status(404).json({
