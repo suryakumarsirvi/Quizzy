@@ -1,3 +1,4 @@
+import CONFIG from "../configs/env.config.js";
 import { registerUser, loginUser, GetUser } from "../services/user.service.js";
 import { generateToken } from "../utils/jwt.js";
 
@@ -9,13 +10,23 @@ export const handleRegister = async (req, res) => {
 
         const token = generateToken({ id: user._id });
 
-        res.setHeader('Authorization', `Bearer ${token}`);
+        // res.setHeader('Authorization', `Bearer ${token}`);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: CONFIG.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         return res.status(201).json({
             success: true,
             message: 'User registered successfully',
-            token,
-            user,
+            user: {
+                id: user._id,
+                fullname: user.fullname,
+                email: user.email,
+            },
         });
     } catch (error) {
         res.status(500).json({
@@ -39,7 +50,14 @@ export const handleLogin = async (req, res) => {
             id: user._id,
         });
 
-        res.setHeader('Authorization', `Bearer ${token}`);
+        // res.setHeader('Authorization', `Bearer ${token}`);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: CONFIG.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         return res.status(200).json({
             success: true,
@@ -62,6 +80,16 @@ export const handleLogin = async (req, res) => {
 };
 
 export const handleLogout = async (req, res) => {
+
+    const cookieOptions = {
+        httpOnly: true,
+        secure: CONFIG.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+     };
+
+    res.clearCookie("token", cookieOptions);
+
     return res.status(200).json({
         success: true,
         message: 'Logout successful',

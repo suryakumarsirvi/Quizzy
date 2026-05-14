@@ -2,23 +2,12 @@ import { verifyToken } from "../utils/jwt.js";
 
 export const isAuthenticated = async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-
-        console.log(authHeader)
-
-        if (!authHeader) {
-            return res.status(401).json({
-                success: false,
-                message: 'Authorization header missing',
-            });
-        }
-
-        const token = authHeader.split(' ')[1];
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: 'Access token missing',
+                message: "Unauthorized",
             });
         }
 
