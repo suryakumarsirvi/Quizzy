@@ -1,16 +1,15 @@
 import CONFIG from "../configs/env.config.js";
 import { registerUser, loginUser, GetUser } from "../services/user.service.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { generateToken } from "../utils/jwt.js";
 
 
-export const handleRegister = async (req, res) => {
+export const handleRegister = asyncHandler(async (req, res) => {
     const { fullname, email, password } = req.body;
-    try {
+
         const user = await registerUser({ fullname, email, password });
 
         const token = generateToken({ id: user._id });
-
-        // res.setHeader('Authorization', `Bearer ${token}`);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -28,17 +27,10 @@ export const handleRegister = async (req, res) => {
                 email: user.email,
             },
         });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Error while register",
-            error: error.message
-        })
-    }
-}
+})
 
-export const handleLogin = async (req, res) => {
-    try {
+export const handleLogin = asyncHandler(async (req, res) => {
+
         const { email, password } = req.body;
 
         const user = await loginUser({
@@ -49,8 +41,6 @@ export const handleLogin = async (req, res) => {
         const token = generateToken({
             id: user._id,
         });
-
-        // res.setHeader('Authorization', `Bearer ${token}`);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -69,17 +59,9 @@ export const handleLogin = async (req, res) => {
                 email: user.email,
             },
         });
+});
 
-    } catch (error) {
-
-        return res.status(401).json({
-            success: false,
-            message: error.message,
-        });
-    }
-};
-
-export const handleLogout = async (req, res) => {
+export const handleLogout = asyncHandler(async (req, res) => {
 
     const cookieOptions = {
         httpOnly: true,
@@ -94,10 +76,9 @@ export const handleLogout = async (req, res) => {
         success: true,
         message: 'Logout successful',
     });
-};
+});
 
-export const handleGetMe = async (req, res) => {
-    try {
+export const handleGetMe = asyncHandler(async (req, res) => {
         const user = await GetUser(req);
 
         if (!user) {
@@ -111,13 +92,4 @@ export const handleGetMe = async (req, res) => {
             success: true,
             user,
         });
-
-    } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: 'Error while getMe',
-            error: error.message,
-        });
-    }
-};
+});

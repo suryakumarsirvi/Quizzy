@@ -14,12 +14,12 @@ requiredEnv.forEach((key)=>{
     }
 });
 
-const CONFIG = {
+const CONFIG = Object.freeze({
     SERVER_PORT: process.env.SERVER_PORT,
     SERVER_HOST: process.env.SERVER_HOST,
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
     NODE_ENV: process.env.NODE_ENV
-};
+});
 
 export default CONFIG;
