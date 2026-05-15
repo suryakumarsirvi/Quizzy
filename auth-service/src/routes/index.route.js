@@ -5,4 +5,4 @@ const IndexRoutes = Router();
 
 IndexRoutes.use('/auth', AuthRoutes);
 
-export default IndexRoutes;k
+export default IndexRoutes;
