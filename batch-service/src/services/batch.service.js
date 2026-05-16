@@ -129,8 +129,6 @@ const deleteBatch = async (batchId) => {
     };
 };
 
-
-
 export default {
     createBatch,
     getBatchById,
